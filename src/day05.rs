@@ -121,7 +121,7 @@ mod tests {
         ];
         for input in inputs {
             let string = String::from(input.0);
-            let result = solve_part1(string);
+            let result = solve_part1(&string);
             assert_eq!(result, input.1);
         }
     }
@@ -136,7 +136,7 @@ mod tests {
         ];
         for input in inputs {
             let string = String::from(input.0);
-            let result = solve_part2(string);
+            let result = solve_part2(&string);
             assert_eq!(result, input.1);
         }
     }
