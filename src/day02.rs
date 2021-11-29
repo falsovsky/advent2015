@@ -18,7 +18,7 @@ fn read_input() -> Vec<(u32, u32, u32)> {
     code
 }
 
-fn cal_paper(length: &u32, width: &u32, height: &u32) -> (u32, u32) {
+fn cal_paper(length: u32, width: u32, height: u32) -> (u32, u32) {
     let side1 = length * width;
     let side2 = width * height;
     let side3 = height * length;
@@ -27,8 +27,8 @@ fn cal_paper(length: &u32, width: &u32, height: &u32) -> (u32, u32) {
     (2 * side1 + 2 * side2 + 2 * side3, *min)
 }
 
-fn cal_ribbon(length: &u32, width: &u32, height: &u32) -> (u32, u32) {
-    let mut values: Vec<u32> = vec![*length, *width , *height];
+fn cal_ribbon(length: u32, width: u32, height: u32) -> (u32, u32) {
+    let mut values: Vec<u32> = vec![length, width , height];
     values.sort_unstable();
     let present = values[0] + values[0] + values[1] + values[1];
     let bow = values[0] * values[1] * values[2];
@@ -41,10 +41,10 @@ fn solve(program: &[(u32, u32, u32)]) -> (u32, u32, u32, u32) {
     let mut present = 0;
     let mut bow = 0;
     for i in program {
-        let (p, s) = cal_paper(&i.0, &i.1, &i.2);
+        let (p, s) = cal_paper(i.0, i.1, i.2);
         paper += p;
         slack += s;
-        let (p, b) = cal_ribbon(&i.0, &i.1, &i.2);
+        let (p, b) = cal_ribbon(i.0, i.1, i.2);
         present += p;
         bow += b;
     }

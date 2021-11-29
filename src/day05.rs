@@ -12,7 +12,7 @@ fn read_input() -> Vec<String> {
     code
 }
 
-fn solve_part1(string: String) -> bool {
+fn solve_part1(string: &str) -> bool {
     const VOWELS: [char; 5] = ['a', 'e', 'i', 'o', 'u'];
     const BAD: [&str; 4] = ["ab", "cd", "pq", "xy"];
     let mut valid = false;
@@ -50,7 +50,7 @@ fn solve_part1(string: String) -> bool {
     valid
 }
 
-fn solve_part2(string: String) -> bool {
+fn solve_part2(string: &str) -> bool {
     let mut valid = false;
     let cstr = string.as_bytes();
 
@@ -89,10 +89,10 @@ fn solve(strings: &[String]) -> (u32, u32) {
     let mut pt1 = 0;
     let mut pt2 = 0;
     for string in strings {
-        if solve_part1(string.to_string()) {
+        if solve_part1(&string.to_string()) {
             pt1 += 1;
         }
-        if solve_part2(string.to_string()) {
+        if solve_part2(&string.to_string()) {
             pt2 += 1;
         }
     }

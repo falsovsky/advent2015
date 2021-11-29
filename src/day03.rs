@@ -15,10 +15,10 @@ fn read_input() -> Vec<char> {
     code
 }
 
-fn get_value(positions: &HashMap<(i32, i32), i32>, position: &(i32, i32)) -> i32 {
+fn get_value(positions: &HashMap<(i32, i32), i32>, position: (i32, i32)) -> i32 {
     let value: i32;
-    if positions.contains_key(position) {
-        value = *positions.get(position).unwrap();
+    if positions.contains_key(&position) {
+        value = *positions.get(&position).unwrap();
     } else {
         value = 1;
     };
@@ -46,12 +46,12 @@ fn solve(program: &[char]) -> (i32, i32) {
             },
             _ => panic!("Invalid operation: {:?}", char)
         }
-        let value = get_value(&positions_pt1, &santa);
+        let value = get_value(&positions_pt1, santa);
         positions_pt1.insert(santa, value);
     }
 
     // pt2
-    let mut santa: (i32, i32) = (0, 0);
+    santa = (0, 0);
     let mut robo: (i32, i32) = (0, 0);
     let mut positions_pt2: HashMap<(i32, i32), i32> = HashMap::new();
     positions_pt2.insert(santa, 2);
@@ -91,10 +91,10 @@ fn solve(program: &[char]) -> (i32, i32) {
             }
         }
 
-        let value = get_value(&positions_pt2, &santa);
+        let mut value = get_value(&positions_pt2, santa);
         positions_pt2.insert(santa, value);
         if pc < program.len() {
-            let value = get_value(&positions_pt2, &robo);
+            value = get_value(&positions_pt2, robo);
             positions_pt2.insert(robo, value);
         }
         pc += 1;
@@ -106,7 +106,7 @@ fn main() {
     let code = read_input();
     let result = solve(&code);
     println!("Part1: {:?}", result.0);
-    println!("part2: {:?}", result.1)
+    println!("part2: {:?}", result.1);
 }
 
 #[cfg(test)]

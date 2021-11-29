@@ -25,7 +25,7 @@ fn main() {
     let input = String::from("ckczppom");
     let result = solve(&input, true);
     println!("Part1: {:?}", result.0);
-    println!("Part2: {:?}", result.1)
+    println!("Part2: {:?}", result.1);
 }
 
 #[cfg(test)]
