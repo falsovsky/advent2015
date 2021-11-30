@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -78,4 +82,9 @@ mod tests {
             assert_eq!(position, input.1);
         }
     }
+}
+
+#[bench]
+fn bench_day01(b: &mut test::Bencher) {
+    b.iter(|| main());
 }

@@ -1,3 +1,7 @@
+#![feature(test)]
+
+extern crate test;
+
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
@@ -11,25 +15,19 @@ fn read_input() -> Vec<(u32, u32, u32)> {
     };
     let buffer = BufReader::new(&fp);
     for line in buffer.lines() {
-        let rline = match line {
-            Ok(line) => line,
-            Err(error) => panic!("{}", error),
+        let line_str = match line {
+            Ok(value) => value,
+            Err(error) => panic!("Could not read anything - {}", error),
         };
-        let data = rline.split('x').collect::<Vec<&str>>();
-        code.push((
-            match data[0].to_string().parse::<u32>() {
+        let parts = line_str.split('x');
+        let mut values: Vec<u32> = Vec::new();
+        for value in parts {
+            values.push(match value.to_string().parse::<u32>() {
                 Ok(value) => value,
-                Err(error) => panic!("Could not convert {} - {}", data[0], error),
-            },
-            match data[1].to_string().parse::<u32>() {
-                Ok(value) => value,
-                Err(error) => panic!("Could not convert {} - {}", data[1], error),
-            },
-            match data[2].to_string().parse::<u32>() {
-                Ok(value) => value,
-                Err(error) => panic!("Could not convert {} - {}", data[1], error),
-            }
-        ));
+                Err(error) => panic!("Could not convert {} - {}", value, error),
+            });
+        };
+        code.push((values[0], values[1], values[2]));
     }
     code
 }
@@ -106,4 +104,9 @@ mod tests {
             assert_eq!(pt2, input.1);
         }
     }
+}
+
+#[bench]
+fn bench_day02(b: &mut test::Bencher) {
+    b.iter(|| main());
 }
