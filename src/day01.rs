@@ -3,31 +3,36 @@ use std::io::BufRead;
 use std::io::BufReader;
 
 fn read_input() -> Vec<char> {
-    let mut code: Vec<char> = Vec::new();
-    let f = File::open("input/day01.txt").unwrap();
-    let file = BufReader::new(&f);
-    for line in file.lines() {
-        for char in line.unwrap().to_string().chars() {
-            code.push(char);
-        }
-    }
-    code
+    let filename = "input/day01.txt";
+    let fp = match File::open(filename) {
+        Ok(file) => file,
+        Err(error) => panic!("{} - {}", filename, error),
+    };
+    let mut buffer = BufReader::new(&fp);
+    let mut line = String::new();
+    let _ = match buffer.read_line(&mut line) {
+        Ok(v) => v,
+        Err(error) => panic!("{}", error),
+    };
+    line.trim().chars().collect::<Vec<_>>()
 }
 
-fn solve(program: &[char]) -> (i32, i32) {
-    let mut level = 0;
-    let mut position = 0;
-    for (i, c) in program.iter().enumerate() {
-        match c {
+fn solve(program: &[char]) -> (i16, i16) {
+    let mut level: i16 = 0;
+    let mut position: i16 = 0;
+    let mut idx: i16 = 0;
+    program.iter().enumerate().for_each(|(_, chr)| {
+        match chr {
             '(' => level += 1,
             ')' => level -= 1,
-            _ => panic!("Invalid instruction: {:?}", c)
+            _ => panic!("Invalid instruction: {}", chr)
         }
         if position == 0 && level == -1 {
-            position = i + 1;
+            position = idx + 1;
         }
-    }
-    (level, position.try_into().unwrap())
+        idx += 1;
+    });
+    (level, position)
 }
 
 fn main() {

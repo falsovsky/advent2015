@@ -4,15 +4,31 @@ use std::io::BufReader;
 
 fn read_input() -> Vec<(u32, u32, u32)> {
     let mut code: Vec<(u32, u32, u32)> = Vec::new();
-    let f = File::open("input/day02.txt").unwrap();
-    let file = BufReader::new(&f);
-    for line in file.lines() {
-        let l = line.unwrap();
-        let data = l.split('x').collect::<Vec<&str>>();
+    let filename = "input/day02.txt";
+    let fp = match File::open(filename) {
+        Ok(file) => file,
+        Err(error) => panic!("{} - {}", filename, error),
+    };
+    let buffer = BufReader::new(&fp);
+    for line in buffer.lines() {
+        let rline = match line {
+            Ok(line) => line,
+            Err(error) => panic!("{}", error),
+        };
+        let data = rline.split('x').collect::<Vec<&str>>();
         code.push((
-            data[0].to_string().parse::<u32>().unwrap(),
-            data[1].to_string().parse::<u32>().unwrap(),
-            data[2].to_string().parse::<u32>().unwrap()
+            match data[0].to_string().parse::<u32>() {
+                Ok(value) => value,
+                Err(error) => panic!("Could not convert {} - {}", data[0], error),
+            },
+            match data[1].to_string().parse::<u32>() {
+                Ok(value) => value,
+                Err(error) => panic!("Could not convert {} - {}", data[1], error),
+            },
+            match data[2].to_string().parse::<u32>() {
+                Ok(value) => value,
+                Err(error) => panic!("Could not convert {} - {}", data[1], error),
+            }
         ));
     }
     code
@@ -23,7 +39,10 @@ fn cal_paper(length: u32, width: u32, height: u32) -> (u32, u32) {
     let side2 = width * height;
     let side3 = height * length;
     let values: Vec<u32> = [side1, side2, side3].to_vec();
-    let min = values.iter().min().unwrap();
+    let min = match values.iter().min() {
+        Some(value) => value,
+        None => panic!("No minimum value"),
+    };
     (2 * side1 + 2 * side2 + 2 * side3, *min)
 }
 
@@ -35,11 +54,11 @@ fn cal_ribbon(length: u32, width: u32, height: u32) -> (u32, u32) {
     (present, bow)
 }
 
-fn solve(program: &[(u32, u32, u32)]) -> (u32, u32, u32, u32) {
-    let mut paper = 0;
-    let mut slack = 0;
-    let mut present = 0;
-    let mut bow = 0;
+fn solve(program: &[(u32, u32, u32)]) -> (u32, u32) {
+    let mut paper: u32 = 0;
+    let mut slack: u32 = 0;
+    let mut present: u32 = 0;
+    let mut bow: u32= 0;
     for i in program {
         let (p, s) = cal_paper(i.0, i.1, i.2);
         paper += p;
@@ -48,14 +67,14 @@ fn solve(program: &[(u32, u32, u32)]) -> (u32, u32, u32, u32) {
         present += p;
         bow += b;
     }
-    (paper, slack, present, bow)
+    (paper + slack, present +  bow)
 }
 
 fn main() {
     let code = read_input();
-    let (paper, slack, present, bow) = solve(&code);
-    println!("Part1 {:?} - Paper: {:?}, Slack: {:?}", paper + slack, paper, slack);
-    println!("Part2 {:?} - Present: {:?}, Bow: {:?}", present + bow, present, bow);
+    let (pt1, pt2) = solve(&code);
+    println!("Part1 {}", pt1);
+    println!("Part2 {}", pt2);
 }
 
 #[cfg(test)]
@@ -70,8 +89,8 @@ mod tests {
         ];
         for input in inputs {
             let code:Vec<(u32, u32, u32)> = vec![(input.0.0, input.0.1, input.0.2)];
-            let (paper, slack, _, _) = solve(&code);
-            assert_eq!(paper + slack, input.1);
+            let (pt1, _) = solve(&code);
+            assert_eq!(pt1, input.1);
         }
     }
 
@@ -83,8 +102,8 @@ mod tests {
         ];
         for input in inputs {
             let code:Vec<(u32, u32, u32)> = vec![(input.0.0, input.0.1, input.0.2)];
-            let (_, _, present, bow) = solve(&code);
-            assert_eq!(present + bow, input.1);
+            let (_, pt2) = solve(&code);
+            assert_eq!(pt2, input.1);
         }
     }
 }
